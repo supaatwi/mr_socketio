@@ -54,7 +54,7 @@ impl SocketIOClient {
         }
     }
 
-    pub fn with_namespace(base_url: &str, namespace: &str) -> Self {
+    pub fn new_with_namespace(base_url: &str, namespace: &str) -> Self {
         let mut client = Self::new(base_url);
         client.namespace = namespace.to_string();
         client
