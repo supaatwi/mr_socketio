@@ -7,7 +7,8 @@ use std::sync::Arc;
 use tokio::sync::Mutex;
 use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
 use url::Url;
-use thiserror::Error;
+
+use crate::error::SocketIOError;
 
 type EventCallback = Arc<dyn Fn(Value) -> () + Send + Sync>;
 type EventHandlers = Arc<Mutex<HashMap<String, Vec<EventCallback>>>>;
@@ -20,21 +21,6 @@ struct SocketIOHandshake {
     ping_interval: u64,
     #[serde(rename = "pingTimeout")]
     ping_timeout: u64,
-}
-
-
-#[derive(Debug, Error)]
-pub enum SocketIOError {
-    #[error("HTTP error: {0}")]
-    HttpError(#[from] reqwest::Error),
-    #[error("WebSocket error: {0}")]
-    WebSocketError(#[from] tokio_tungstenite::tungstenite::Error),
-    #[error("JSON error: {0}")]
-    JsonError(#[from] serde_json::Error),
-    #[error("URL parse error: {0}")]
-    UrlError(#[from] url::ParseError),
-    #[error("Handshake failed: {0}")]
-    HandshakeFailed(String),
 }
 
 #[derive(Clone)]
